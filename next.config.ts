@@ -5,7 +5,6 @@ const nextConfig: NextConfig = {
     // !! WARN !!
     // Dangerously allow production builds to successfully complete even if
     // your project has type errors.
-    // !! WARN !!
     ignoreBuildErrors: true,
   },
   eslint: {
@@ -22,7 +21,11 @@ const nextConfig: NextConfig = {
     ],
     unoptimized: true,
   },
-  // Enable webpack as a fallback since turbopack has issues on this platform
+  // This explicitly tells Next.js 16 how to handle the Turbopack/Webpack transition
+  experimental: {
+    turbopack: {},
+  },
+  // Keep your webpack fallback for the --webpack flag in package.json
   webpack: (config) => {
     return config;
   },
