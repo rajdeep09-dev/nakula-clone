@@ -11,24 +11,10 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Parth Sharma — Frontend Architect & Problem Solver",
-  description: "High-performance, motion-first web applications and digital experiences that leave a lasting impression.",
-  keywords: ["Next.js", "React", "Framer Motion", "UI/UX Design", "Frontend Engineering"],
+  title: "Parth Sharma - Developer, Freelancer & Founder; Problem Solver",
+  description: "Problem Solver, Creative Engineer building the future. I design and build products that deliver real impact.",
+  keywords: ["Parth Sharma", "Frontend Architect", "UI/UX Designer", "Full Stack Developer", "Next.js", "Framer Motion"],
   authors: [{ name: "Parth Sharma" }],
-  openGraph: {
-    title: "Parth Sharma — Frontend Architect",
-    description: "Building the future of the web, one interaction at a time.",
-    url: "https://parthh.in",
-    siteName: "Parth Sharma Portfolio",
-    locale: "en_US",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Parth Sharma — Frontend Architect",
-    description: "Building the future of the web.",
-    creator: "@ksparth12",
-  },
 };
 
 /**

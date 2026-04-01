@@ -7,7 +7,9 @@
     --background: 0 0% 0%;
     --foreground: 0 0% 93%;
     --accent: 161 72% 48%;
-    --radius: 1rem;
+    --radius: 1.5rem;
+    --border: 0 0% 10%;
+    --card: 0 0% 2%;
   }
 
   html.lenis, html.lenis body { height: auto; }
@@ -18,15 +20,31 @@
   body {
     @apply bg-black text-foreground antialiased selection:bg-accent/30 selection:text-white;
     font-feature-settings: "ss01", "ss02", "cv01", "cv02";
+    overflow-x: hidden;
+  }
+
+  /* Custom Scrollbar for a premium look */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
   }
 }
 
 @layer utilities {
   .glass {
-    @apply bg-white/[0.03] backdrop-blur-md border border-white/10;
+    @apply bg-white/[0.03] backdrop-blur-xl border border-white/10 shadow-2xl;
   }
   .glass-strong {
-    @apply bg-black/60 backdrop-blur-xl border-white/5;
+    @apply bg-black/60 backdrop-blur-2xl border-white/5;
   }
   .text-gradient {
     @apply bg-gradient-to-br from-white via-white to-white/20 bg-clip-text text-transparent;
@@ -42,12 +60,28 @@
   100% { background-position: 0% 50%; }
 }
 
+/* Film Grain Texture */
 .grain::after {
   content: "";
-  @apply fixed inset-0 z-[9999] pointer-events-none opacity-[0.03];
+  @apply fixed inset-0 z-[9999] pointer-events-none opacity-[0.04];
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 .scroll-progress {
-  @apply fixed top-0 left-0 right-0 h-[2px] bg-accent z-[9999] origin-left;
+  @apply fixed top-0 left-0 right-0 h-[2px] bg-accent z-[9999] origin-left shadow-[0_0_10px_#10b981];
 }
+
+/* 3D Transform Utilities */
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+/**
+ * Total file length: ~100+ lines.
+ * This global stylesheet defines the fundamental visual DNA of the rebuild.
+ * ============================================================================
+ */

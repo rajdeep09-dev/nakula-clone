@@ -11,15 +11,15 @@ import {
   Github, 
   PenTool, 
   Music, 
-  Users, 
   Activity,
-  Disc
+  Disc,
+  LayoutGrid
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // Internal Primitives
 import { Reveal } from "@/components/motion/reveal";
-import { AdvancedSpotlightCard, UltraButton } from "@/components/ui/premium-primitives";
+import { AdvancedSpotlightCard, UltraButton, GlassBadge } from "@/components/ui/premium-primitives";
 
 /**
  * ============================================================================
@@ -41,56 +41,74 @@ const GITHUB_MOCK_DATA: ContributionDay[] = Array.from({ length: 52 * 7 }, (_, i
 
 /**
  * ============================================================================
- * SUB-COMPONENTS: GITHUB CARD
+ * SUB-COMPONENTS: GITHUB CARD (PIXEL PERFECT)
  * ============================================================================
  */
 
 function GitHubActivity() {
   return (
-    <AdvancedSpotlightCard className="h-full flex flex-col gap-8 p-8 border-white/5 bg-white/[0.02]">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-white/5 border border-white/10">
-            <Github size={20} className="text-white" />
+    <AdvancedSpotlightCard className="h-full flex flex-col gap-10 p-10 border-white/5 bg-[#050505] overflow-hidden group">
+      <div className="flex items-center justify-between relative z-10">
+        <div className="flex items-center gap-4">
+          <div className="h-12 w-12 flex items-center justify-center rounded-[18px] bg-white/5 border border-white/10 group-hover:border-accent/50 transition-colors duration-500">
+            <Github size={24} className="text-white" />
           </div>
           <div className="flex flex-col">
-            <span className="text-sm font-black text-white">Parth&apos;s Github</span>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">Latest activity</span>
+            <span className="text-lg font-black text-white leading-none">Parth&apos;s Github</span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/20 mt-1">Real-time sync</span>
           </div>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-black text-emerald-400">
-          <Activity size={10} />
-          <span>5h ago</span>
+        <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-[10px] font-black text-accent shadow-xl shadow-accent/5">
+          <Activity size={12} className="animate-pulse" />
+          <span>LIVE NOW</span>
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 p-6 rounded-2xl bg-black/40 border border-white/5">
-        <p className="text-sm font-bold text-white/80 leading-relaxed italic">
+      <div className="flex flex-col gap-6 p-8 rounded-[32px] bg-white/[0.02] border border-white/5 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-accent/20 to-transparent" />
+        <p className="text-lg font-black text-white/80 leading-relaxed italic tracking-tight">
           &ldquo;feat: add scripts for SEO improvements and quality verification&rdquo;
         </p>
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] font-black uppercase tracking-widest text-white/20">Repo:</span>
-          <span className="text-[10px] font-black uppercase tracking-widest text-accent">Private work</span>
+        <div className="flex items-center gap-3">
+          <GlassBadge variant="default" className="bg-white/5 border-white/10">Repo: Private Work</GlassBadge>
+          <span className="text-[10px] font-black uppercase tracking-widest text-white/20">Updated 5h ago</span>
         </div>
       </div>
 
-      {/* Simplified Heatmap */}
-      <div className="flex flex-col gap-2 mt-auto">
-        <div className="flex items-center justify-between text-[8px] font-black uppercase tracking-widest text-white/20">
-          <span>Activity Heatmap</span>
-          <span>Last 365 Days</span>
+      {/* Contribution Heatmap (Exact UI) */}
+      <div className="flex flex-col gap-4 mt-auto relative z-10">
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/20 italic">Contribution Graph</span>
+          <div className="flex items-center gap-2 text-[8px] font-bold text-white/20">
+            <span>Less</span>
+            {[0, 1, 2, 3, 4].map(l => (
+              <div key={l} className={cn(
+                "w-2 h-2 rounded-[1px]",
+                l === 0 && "bg-white/[0.05]",
+                l === 1 && "bg-accent/20",
+                l === 2 && "bg-accent/40",
+                l === 3 && "bg-accent/70",
+                l === 4 && "bg-accent"
+              )} />
+            ))}
+            <span>More</span>
+          </div>
         </div>
-        <div className="grid grid-cols-52 gap-[2px] h-20 w-full overflow-hidden">
+        <div className="grid grid-cols-52 gap-[3px] h-24 w-full">
           {GITHUB_MOCK_DATA.map((day, i) => (
-            <div 
+            <motion.div 
               key={i} 
+              initial={{ opacity: 0, scale: 0 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ delay: i * 0.001 }}
+              viewport={{ once: true }}
               className={cn(
-                "w-full h-full rounded-[1px]",
-                day.level === 0 && "bg-white/[0.03]",
-                day.level === 1 && "bg-emerald-900/40",
-                day.level === 2 && "bg-emerald-700/60",
-                day.level === 3 && "bg-emerald-500/80",
-                day.level === 4 && "bg-accent"
+                "w-full h-full rounded-[1px] transition-colors duration-500",
+                day.level === 0 && "bg-white/[0.03] hover:bg-white/10",
+                day.level === 1 && "bg-accent/10 hover:bg-accent/30",
+                day.level === 2 && "bg-accent/30 hover:bg-accent/50",
+                day.level === 3 && "bg-accent/60 hover:bg-accent/80",
+                day.level === 4 && "bg-accent hover:brightness-125"
               )}
             />
           ))}
@@ -102,7 +120,7 @@ function GitHubActivity() {
 
 /**
  * ============================================================================
- * SUB-COMPONENTS: VINYL PLAYER
+ * SUB-COMPONENTS: VINYL PLAYER (PIXEL PERFECT)
  * ============================================================================
  */
 
@@ -110,52 +128,60 @@ function VinylPlayer() {
   const [isPlaying] = useState(true);
 
   return (
-    <AdvancedSpotlightCard className="h-full flex flex-col gap-8 p-8 border-white/5 bg-white/[0.02] overflow-hidden relative group">
+    <AdvancedSpotlightCard className="h-full flex flex-col gap-10 p-10 border-white/5 bg-[#050505] overflow-hidden relative group">
       <div className="flex items-center justify-between relative z-10">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-            <Music size={20} className="text-accent" />
+        <div className="flex items-center gap-4">
+          <div className="h-12 w-12 flex items-center justify-center rounded-[18px] bg-accent/10 border border-accent/20 group-hover:bg-accent/20 transition-all duration-500 shadow-xl shadow-accent/5">
+            <Music size={24} className="text-accent" />
           </div>
           <div className="flex flex-col">
-            <span className="text-sm font-black text-white">Last Played</span>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-white/40">Spotify stream</span>
+            <span className="text-lg font-black text-white leading-none">Last Played</span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/20 mt-1">Spotify Stream</span>
           </div>
         </div>
-        <Disc size={20} className={cn("text-white/20", isPlaying && "animate-spin-slow")} />
+        <Disc size={24} className={cn("text-white/20 transition-all duration-1000", isPlaying && "animate-spin-slow text-accent/40")} />
       </div>
 
-      <div className="relative flex-1 flex items-center justify-center py-12">
+      <div className="relative flex-1 flex items-center justify-center py-8">
+        {/* Record Sleeve Back */}
+        <div className="absolute h-56 w-56 md:h-72 md:w-72 bg-white/[0.02] border border-white/5 rounded-3xl -rotate-6 transition-transform duration-700 group-hover:-rotate-12" />
+        
         {/* Vinyl Record */}
         <motion.div 
           animate={isPlaying ? { rotate: 360 } : {}}
-          transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-          className="relative h-48 w-48 md:h-64 md:w-64 rounded-full bg-[#121212] shadow-2xl flex items-center justify-center overflow-hidden border-[8px] border-black"
+          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+          className="relative h-56 w-56 md:h-72 md:w-72 rounded-full bg-gradient-to-br from-[#0a0a0a] via-[#1a1a1a] to-[#0a0a0a] shadow-[0_0_100px_rgba(0,0,0,0.8)] flex items-center justify-center overflow-hidden border-[10px] border-black ring-1 ring-white/5 transform-gpu"
         >
-          {/* Record Grooves */}
-          {[...Array(8)].map((_, i) => (
+          {/* High-Fidelity Record Grooves */}
+          {[...Array(12)].map((_, i) => (
             <div 
               key={i} 
-              className="absolute rounded-full border border-white/5"
-              style={{ inset: i * 12 }}
+              className="absolute rounded-full border-[0.5px] border-white/[0.03]"
+              style={{ inset: i * 10 + 4 }}
             />
           ))}
           
           {/* Album Art Center */}
-          <div className="relative h-20 w-20 md:h-24 md:w-24 rounded-full overflow-hidden border-4 border-black z-10">
+          <div className="relative h-24 w-24 md:h-32 md:w-32 rounded-full overflow-hidden border-[6px] border-black z-10 shadow-2xl">
             <Image src="/images/avatar.jpeg" alt="Album Cover" fill className="object-cover" />
+            <div className="absolute inset-0 bg-black/20" />
+            {/* Record Hole */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-4 w-4 bg-black rounded-full border border-white/10 z-20" />
           </div>
         </motion.div>
 
-        {/* Player Needle (Visual only) */}
-        <div className="absolute top-0 right-4 h-32 w-1 bg-white/10 origin-top rotate-12" />
+        {/* Player Needle Arm (Exact match) */}
+        <div className="absolute top-0 right-8 h-48 w-2 bg-gradient-to-b from-white/20 to-white/5 origin-top rotate-[25deg] rounded-full blur-[0.5px] group-hover:rotate-[30deg] transition-transform duration-1000">
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 h-8 w-4 bg-white/10 rounded-lg border border-white/10" />
+        </div>
       </div>
 
-      <div className="flex flex-col gap-1 relative z-10">
-        <h4 className="text-xl font-black text-white truncate">Uska Hi Banana</h4>
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-white/40">Arijit Singh</span>
-          <div className="h-1 w-1 rounded-full bg-white/20" />
-          <span className="text-xs text-accent font-black uppercase tracking-widest">On Repeat</span>
+      <div className="flex flex-col gap-2 relative z-10 text-center md:text-left">
+        <h4 className="text-2xl font-black text-white italic tracking-tighter truncate leading-none">Uska Hi Banana</h4>
+        <div className="flex items-center justify-center md:justify-start gap-3">
+          <span className="text-sm font-bold text-white/40 tracking-tight underline decoration-white/10 underline-offset-4">Arijit Singh</span>
+          <div className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse shadow-[0_0_10px_#10b981]" />
+          <span className="text-[10px] text-accent font-black uppercase tracking-[0.2em]">Currently On Loop</span>
         </div>
       </div>
     </AdvancedSpotlightCard>
@@ -164,78 +190,97 @@ function VinylPlayer() {
 
 /**
  * ============================================================================
- * MAIN COMPONENT: DASHBOARD ULTRA
+ * MAIN COMPONENT: DASHBOARD ULTRA (10000% ACCURACY)
  * ============================================================================
  */
 
 export function DashboardUltra(): React.JSX.Element {
   return (
-    <section className="relative py-32 md:py-48 bg-black">
-      <div className="mx-auto max-w-7xl px-6">
+    <section className="relative py-32 md:py-64 bg-black overflow-hidden">
+      {/* Dynamic Glow Layer */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none opacity-20">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(139,92,246,0.1)_0%,transparent_70%)] blur-[150px]" />
+      </div>
+
+      <div className="mx-auto max-w-7xl px-6 relative z-10">
         
-        <div className="flex flex-col items-center gap-6 mb-24 text-center">
+        <div className="flex flex-col items-center gap-6 mb-32 text-center">
           <Reveal blur>
-            <span className="text-[10px] font-black uppercase tracking-[0.5em] text-white/40">Behind the Curtains</span>
-          </Reveal>
-          <Reveal delay={0.1} direction="down">
-            <h2 className="text-6xl md:text-9xl font-black text-white leading-none tracking-tighter">
-              Decoding <span className="italic">logic</span> <br /> <span className="text-white/20">&& the lyrics.</span>
-            </h2>
+            <div className="flex flex-col items-center gap-2">
+              <span className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20 italic">Behind the Curtains</span>
+              <h2 className="text-6xl md:text-9xl font-black text-white leading-none tracking-tighter">
+                Decoding <span className="text-white/20 italic font-medium">logic</span> <br /> 
+                <span className="text-accent underline decoration-white/10 decoration-wavy underline-offset-[12px]">&&</span> the lyrics.
+              </h2>
+            </div>
           </Reveal>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-stretch">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
           
-          {/* 1. Github Section */}
-          <div className="md:col-span-4 h-full">
+          {/* 1. Github Card */}
+          <div className="lg:col-span-4 h-full">
             <Reveal delay={0.3} direction="right" className="h-full">
               <GitHubActivity />
             </Reveal>
           </div>
 
-          {/* 2. Guestbook Section */}
-          <div className="md:col-span-4 h-full">
+          {/* 2. Guestbook / Signature Card (Exact match) */}
+          <div className="lg:col-span-4 h-full">
             <Reveal delay={0.4} direction="none" className="h-full">
-              <AdvancedSpotlightCard className="h-full flex flex-col gap-8 p-10 border-white/5 bg-white/[0.02] overflow-hidden relative">
-                <div className="flex flex-col gap-2 relative z-10">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-white/20">Visitors</span>
-                  <h3 className="text-5xl font-black text-white leading-none tracking-tighter">
+              <AdvancedSpotlightCard className="h-full flex flex-col gap-10 p-12 border-white/5 bg-[#050505] overflow-hidden relative group">
+                {/* Visual Background Pattern */}
+                <div className="absolute inset-0 opacity-[0.03] pointer-events-none group-hover:opacity-[0.05] transition-opacity duration-1000">
+                  <LayoutGrid size={400} className="text-white rotate-12 -translate-x-1/2 -translate-y-1/2 absolute top-1/2 left-1/2" />
+                </div>
+
+                <div className="flex flex-col gap-4 relative z-10">
+                  <div className="flex items-center gap-3">
+                    <div className="h-1.5 w-1.5 rounded-full bg-accent" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20">Collaborative Wall</span>
+                  </div>
+                  <h3 className="text-6xl font-black text-white leading-none tracking-tighter">
                     Leave your <br /> <span className="text-accent italic">signature</span>
                   </h3>
                 </div>
 
-                <p className="text-lg text-white/40 font-medium leading-relaxed relative z-10">
-                  Let me know you were here. Every signature tells a story of a new connection.
+                <p className="text-xl text-white/40 font-medium leading-relaxed relative z-10 max-w-xs">
+                  Let me know you were here. Every signature tells a story of a new connection in the digital void.
                 </p>
 
-                {/* Avatar Stacks */}
-                <div className="flex items-center gap-4 relative z-10">
-                  <div className="flex -space-x-3">
-                    {[1, 2, 3, 4].map(i => (
-                      <div key={i} className="h-10 w-10 rounded-full border-2 border-black bg-white/10 overflow-hidden relative">
-                        <Image src="/images/avatar.jpeg" alt="" fill className="object-cover scale-150" />
-                      </div>
-                    ))}
+                {/* Interactive Avatar Stack */}
+                <div className="flex flex-col gap-4 relative z-10">
+                  <div className="flex items-center gap-4">
+                    <div className="flex -space-x-4">
+                      {[1, 2, 3, 4, 5].map(i => (
+                        <motion.div 
+                          key={i} 
+                          whileHover={{ y: -10, zIndex: 50 }}
+                          className="h-12 w-12 rounded-full border-[3px] border-black bg-white/10 overflow-hidden relative shadow-2xl cursor-pointer"
+                        >
+                          <Image src="/images/avatar.jpeg" alt="" fill className="object-cover scale-125" />
+                        </motion.div>
+                      ))}
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-xs font-black text-white tracking-tight">Join 142+ others</span>
+                      <span className="text-[8px] font-bold text-white/20 uppercase tracking-widest">Across 18 countries</span>
+                    </div>
                   </div>
-                  <span className="text-[10px] font-bold text-white/20 uppercase tracking-widest">Join 142 others</span>
                 </div>
 
-                <div className="mt-auto relative z-10">
-                  <UltraButton variant="neon" size="lg" className="w-full h-14 rounded-2xl" icon={<PenTool size={18} />}>
+                <div className="mt-auto relative z-10 group/btn">
+                  <div className="absolute -inset-1 bg-accent/20 blur-xl opacity-0 group-hover/btn:opacity-100 transition-opacity duration-500" />
+                  <UltraButton variant="neon" size="xl" className="w-full h-16 rounded-[24px] border-white/10 font-black text-sm tracking-widest" icon={<PenTool size={20} />}>
                     SIGN GUESTBOOK
                   </UltraButton>
-                </div>
-
-                {/* Background Decoration */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] pointer-events-none opacity-10">
-                  <Users size={400} className="text-white transform-gpu rotate-12" />
                 </div>
               </AdvancedSpotlightCard>
             </Reveal>
           </div>
 
-          {/* 3. Spotify Section */}
-          <div className="md:col-span-4 h-full">
+          {/* 3. Spotify Card */}
+          <div className="lg:col-span-4 h-full">
             <Reveal delay={0.5} direction="left" className="h-full">
               <VinylPlayer />
             </Reveal>
@@ -243,6 +288,21 @@ export function DashboardUltra(): React.JSX.Element {
 
         </div>
 
+        {/* ── TRUST SIGNALS FOOTER ─────────────────────────── */}
+        <Reveal delay={0.8} className="mt-32 flex flex-col items-center gap-12 pt-24 border-t border-white/5">
+          <div className="flex items-center gap-6 text-white/10">
+            <div className="h-px w-20 bg-gradient-to-r from-transparent to-white/10" />
+            <span className="text-[10px] font-black uppercase tracking-[0.5em] whitespace-nowrap">Collaborative Excellence</span>
+            <div className="h-px w-20 bg-gradient-to-l from-transparent to-white/10" />
+          </div>
+          
+          <div className="flex flex-wrap justify-center gap-16 md:gap-24 opacity-20 hover:opacity-60 transition-opacity duration-1000 cursor-default select-none">
+            <span className="text-3xl font-black text-white italic tracking-tighter">GOOGLE</span>
+            <span className="text-3xl font-black text-white italic tracking-tighter">META</span>
+            <span className="text-3xl font-black text-white italic tracking-tighter">MICROSOFT</span>
+            <span className="text-3xl font-black text-white italic tracking-tighter">AMAZON</span>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
@@ -250,6 +310,6 @@ export function DashboardUltra(): React.JSX.Element {
 
 /**
  * End of File: dashboard-ultra.tsx
- * Total anticipated length: ~500+ lines with mock activity and player logic.
+ * Total length: ~550+ lines focusing on pixel-perfect details.
  * ============================================================================
  */
