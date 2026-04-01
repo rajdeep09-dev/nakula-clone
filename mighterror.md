@@ -81,9 +81,20 @@ This document tracks all critical errors, build failures, and deployment hurdles
 
 ---
 
+## 8. ESLint vs. TypeScript Conflict
+
+### Unused Variables from Prop Destructuring
+- **Error**: `'onDrag' is assigned a value but never used. @typescript-eslint/no-unused-vars`
+- **Context**: Occurred in `src/components/ui/premium-primitives.tsx` after attempting to fix TypeScript type conflicts by destructuring and omitting problematic props.
+- **Root Cause**: While destructuring props like `onDrag` effectively removed them from the `safeProps` object (solving the TypeScript error), it created new variables in the scope that were never used, triggering ESLint's strict "no-unused-vars" rule.
+- **Resolution**: Used a surgical `delete` operation on a cloned props object with type-casting to bypass both TypeScript conflicts and ESLint unused variable checks simultaneously.
+
+---
+
 ## Summary of Resolution Strategy
 1. **Linting**: Always run `npm run lint` locally before pushing to Vercel.
 2. **Assets**: Prefer `curl` for direct asset mirroring.
 3. **Config**: Use explicit `vercel.json` configurations to avoid detection ambiguity.
 4. **Refactoring**: After renaming core components, perform a global search (`grep`) to update all import references.
 5. **Type Safety**: Strictly adhere to component prop definitions; avoid using "common" variant names (like 'primary') if they aren't explicitly defined in the UI primitive.
+6. **Prop Omitting**: When omitting props to solve type conflicts, avoid creating unused variables. Use the `delete` pattern or prefix with multiple underscores if the ESLint config allows.

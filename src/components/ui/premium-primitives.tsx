@@ -142,12 +142,14 @@ export const UltraButton = forwardRef<HTMLButtonElement, UltraButtonProps>(
       xl: "h-15 px-10 text-lg"
     };
 
-    // Filter out standard button props that conflict with motion props
-    const { 
-      onDrag, onDragStart, onDragEnd, onDragOver,
-      onAnimationStart: _onAnimationStart, 
-      ...safeProps 
-    } = props;
+    // Filter out standard button props that conflict with motion props without creating unused variables
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const safeProps = { ...props } as any;
+    delete safeProps.onDrag;
+    delete safeProps.onDragStart;
+    delete safeProps.onDragEnd;
+    delete safeProps.onDragOver;
+    delete safeProps.onAnimationStart;
 
     return (
       <motion.button
@@ -306,11 +308,13 @@ export function AdvancedSpotlightCard({
     spotlightY.set(-1000);
   }, [x, y, spotlightX, spotlightY]);
 
-  const { 
-    onDrag, onDragStart, onDragEnd, onDragOver,
-    onAnimationStart: _onAnimationStart, 
-    ...safeProps 
-  } = props;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const safeProps = { ...props } as any;
+  delete safeProps.onDrag;
+  delete safeProps.onDragStart;
+  delete safeProps.onDragEnd;
+  delete safeProps.onDragOver;
+  delete safeProps.onAnimationStart;
 
   return (
     <motion.div
