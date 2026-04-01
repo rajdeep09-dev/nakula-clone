@@ -1,8 +1,6 @@
 import { Navbar } from "@/components/sections/navbar";
 import { Footer } from "@/components/sections/footer";
-import { Reveal, StaggerReveal, staggerItem } from "@/components/motion/reveal";
-import { SpotlightCard } from "@/components/motion/spotlight-card";
-import { motion } from "framer-motion";
+import { Reveal, StaggerReveal } from "@/components/motion/reveal";
 import Image from "next/image";
 
 const EXPERIENCE = [
