@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Reveal } from "@/components/motion/reveal";
 
 const LINKS = {
   EXPLORE: [
