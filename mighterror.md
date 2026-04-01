@@ -16,11 +16,14 @@ This document tracks all critical errors, build failures, and deployment hurdles
 
 ### Unused Imports (ESLint)
 - **Error**: `Error: 'useEffect' is defined but never used. @typescript-eslint/no-unused-vars`
-- **Error**: `Error: 'Reveal' is defined but never used. @typescript-eslint/no-unused-vars`
-- **Error**: `Error: 'staggerItem' is defined but never used. @typescript-eslint/no-unused-vars`
 - **Context**: Vercel's default build command runs `next lint`, which treats warnings as errors and halts the build.
-- **Root Cause**: Cleaning up components or refactoring code left behind active imports that weren't utilized in the final JSX.
-- **Resolution**: Surgically removed unused imports from `src/components/motion/background.tsx`, `src/components/sections/footer.tsx`, and `src/app/about/page.tsx`.
+- **Resolution**: Surgically removed unused imports and variables across multiple components (e.g., `hero-ultra.tsx`, `skillset-ultra.tsx`, `dashboard-ultra.tsx`).
+
+### JSX Parsing Errors (Unclosed Tags)
+- **Error**: `Parsing error: JSX element 'Reveal' has no corresponding closing tag.`
+- **Context**: Occurred in `dashboard-ultra.tsx` and `hero-ultra.tsx` after large code additions.
+- **Root Cause**: Manual implementation of complex, high-density components (>500 lines) led to mismatched or missing closing tags for nested motion wrappers.
+- **Resolution**: Meticulously reviewed file endings and nested structures to ensure every `div`, `Reveal`, and `section` was correctly closed.
 
 ---
 
@@ -29,72 +32,48 @@ This document tracks all critical errors, build failures, and deployment hurdles
 ### Deployment Completed but 404 NOT_FOUND
 - **Error**: `404: NOT_FOUND (Code: NOT_FOUND)`
 - **Context**: Build finished successfully on Vercel, but the preview URL showed a 404 for the root page.
-- **Root Cause**: Potential failure in Vercel's automatic framework detection or an issue with `.mjs` configuration files in certain Next.js versions.
 - **Resolution**: 
     1. Added `vercel.json` with `"framework": "nextjs"` to force detection.
     2. Converted `next.config.mjs` to `next.config.js` using `module.exports` for maximum compatibility.
-    3. Cleaned local `.next` cache before pushing.
 
 ---
 
-## 4. Asset Acquisition Errors
+## 4. 3D & Third-Party Library Errors
 
-### Browserless Download Timeout
-- **Error**: `Download failed (status 408): Request has timed out`
-- **Context**: Attempting to download the logo SVG directly from the live site via the MCP tool.
-- **Root Cause**: Large assets or network restrictions on the target server preventing the headless browser from completing the buffer transfer within the timeout limit.
-- **Resolution**: Used `run_shell_command` with `curl` to fetch assets directly, providing more robust control over the download process.
+### NPM ERESOLVE (React Version Conflict)
+- **Error**: `npm error ERESOLVE unable to resolve dependency tree`
+- **Context**: Occurred when installing `three` and `@react-three/fiber` in a project with `react@18.3.1`.
+- **Root Cause**: Latest versions of `@react-three/fiber` expect React 19, while the project was initialized with React 18.
+- **Resolution**: Used explicit versioning (`@react-three/fiber@8.17.10`) and `--legacy-peer-deps` to force compatible installations.
 
----
+### R3F vs. SVG Namespace Conflict
+- **Error**: `Type '...' is not assignable to type 'SVGLineElementAttributes<SVGLineElement>'`
+- **Context**: In `ultra-globe.tsx`, the `<line>` component was misinterpreted as an SVG element by the compiler.
+- **Root Cause**: TypeScript ambiguity when using standard HTML/SVG tag names inside a React Three Fiber scene without explicit casting or proper primitive usage.
+- **Resolution**: Wrapped the 3D line geometry in a `<primitive object={new THREE.Line(geom)} />` to distinguish it from SVG elements.
 
-## 5. Dependency & Security Warnings
-
-### Renamed Package Warning
-- **Warning**: `@studio-freight/lenis` is renamed to `lenis`.
-- **Impact**: Non-breaking, but potential for future support issues.
-- **Resolution**: Maintained current version for compatibility with F12X skill requirements but noted for future migration.
-
-### Security Vulnerabilities
-- **Warning**: `next@14.2.15` and `glob` versions contain known vulnerabilities.
-- **Impact**: Risk of security exploits in production.
-- **Resolution**: Use `npm audit fix` where possible, or upgrade to Next.js 15+ if the architectural shift allows.
+### Implicit Any in Config Callbacks
+- **Error**: `Parameter 'state' implicitly has an 'any' type.`
+- **Context**: Occurred in `cobe` globe initialization inside `hero-ultra.tsx`.
+- **Root Cause**: Third-party libraries without comprehensive `@types` packages often have implicit `any` in callback signatures.
+- **Resolution**: Explicitly typed the parameter as `(state: Record<string, any>)` and used `// eslint-disable-next-line` where cast was unavoidable.
 
 ---
 
-## 6. Import & Refactoring Errors
+## 5. Import & Namespace Errors
 
-### Module Not Found after Renaming
-- **Error**: `Module not found: Can't resolve '@/components/sections/navbar'`
-- **Context**: Occurred after the Ultra-Premium upgrade where `navbar.tsx` was replaced by `ultra-nav.tsx`.
-- **Root Cause**: Placeholder pages (`blogs`, `labs`, etc.) were still importing the old `Navbar` component which no longer existed in the file system.
-- **Resolution**: Updated all placeholder page imports to use `UltraNav` instead of `Navbar`.
-
----
-
-## 7. TypeScript Type Errors
-
-### Invalid Component Prop Variant
-- **Error**: `Type '"primary"' is not assignable to type '"default" | "secondary" | "outline" | "ghost" | "glass" | "neon" | undefined'`
-- **Context**: Occurred in `src/components/sections/ultra-nav.tsx` when calling the `UltraButton` component.
-- **Root Cause**: The `UltraButton` interface defines specific string literals for the `variant` prop (e.g., `"default"`, `"neon"`), but a non-existent `"primary"` variant was passed instead.
-- **Resolution**: Changed the `variant` prop value from `"primary"` to `"default"` to align with the component's type definition.
-
----
-
-## 8. ESLint vs. TypeScript Conflict
-
-### Unused Variables from Prop Destructuring
-- **Error**: `'onDrag' is assigned a value but never used. @typescript-eslint/no-unused-vars`
-- **Context**: Occurred in `src/components/ui/premium-primitives.tsx` after attempting to fix TypeScript type conflicts by destructuring and omitting problematic props.
-- **Root Cause**: While destructuring props like `onDrag` effectively removed them from the `safeProps` object (solving the TypeScript error), it created new variables in the scope that were never used, triggering ESLint's strict "no-unused-vars" rule.
-- **Resolution**: Used a surgical `delete` operation on a cloned props object with type-casting to bypass both TypeScript conflicts and ESLint unused variable checks simultaneously.
+### Duplicate Local Declarations
+- **Error**: `Import declaration conflicts with local declaration of 'Lock'`
+- **Context**: In `skillset-ultra.tsx`, `Lock` was both imported from `lucide-react` and defined as a local helper SVG function.
+- **Resolution**: Removed the redundant local SVG functions in favor of the standardized Lucide icon imports.
 
 ---
 
 ## Summary of Resolution Strategy
 1. **Linting**: Always run `npm run lint` locally before pushing to Vercel.
-2. **Assets**: Prefer `curl` for direct asset mirroring.
+2. **Assets**: Prefer `curl` for direct asset mirroring to avoid MCP browser timeouts.
 3. **Config**: Use explicit `vercel.json` configurations to avoid detection ambiguity.
 4. **Refactoring**: After renaming core components, perform a global search (`grep`) to update all import references.
-5. **Type Safety**: Strictly adhere to component prop definitions; avoid using "common" variant names (like 'primary') if they aren't explicitly defined in the UI primitive.
-6. **Prop Omitting**: When omitting props to solve type conflicts, avoid creating unused variables. Use the `delete` pattern or prefix with multiple underscores if the ESLint config allows.
+5. **Type Safety**: Strictly adhere to component prop definitions; use `npx tsc --noEmit` as the ultimate source of truth.
+6. **3D Primitives**: Use `<primitive />` in R3F scenes to avoid HTML/SVG tag name collisions.
+7. **Dependency Lock**: Force specific versions with `--legacy-peer-deps` when facing framework version mismatches (e.g., React 18 vs 19).
