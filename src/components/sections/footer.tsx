@@ -59,7 +59,11 @@ export function Footer(): React.JSX.Element {
         </div>
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 border-t border-white/5 pt-12">
-          <p className="text-xs text-white/20">© {new Date().getFullYear()} Parth Sharma. All rights reserved.</p>
+          <div className="flex items-center gap-6">
+            <p className="text-xs text-white/20">© {new Date().getFullYear()} Parth Sharma. All rights reserved.</p>
+            <a href="/privacy" className="text-xs text-white/20 hover:text-white transition-colors">Privacy</a>
+            <a href="/terms" className="text-xs text-white/20 hover:text-white transition-colors">Terms</a>
+          </div>
           <div className="flex items-center gap-6">
             <span className="text-[10px] font-bold uppercase tracking-widest text-white/20">Crafted with ❤️ using Next.js</span>
           </div>

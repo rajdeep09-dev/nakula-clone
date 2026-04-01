@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Command } from "lucide-react";
+import { Menu, X, Command, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Magnetic } from "@/components/motion/magnetic";
@@ -14,9 +14,17 @@ const LINKS = [
   { label: "Blogs", href: "/blogs" },
 ];
 
+const MORE_LINKS = [
+  { label: "Labs", href: "/labs", desc: "Experimental playground & fun micro-tools" },
+  { label: "Links", href: "/links", desc: "Socials & Profiles" },
+  { label: "Uses", href: "/uses", desc: "My gear & software" },
+  { label: "Guestbook", href: "/guestbook", desc: "Sign my wall" },
+];
+
 export function Navbar(): React.JSX.Element {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
 
   useEffect(() => {
     const fn = (): void => { setScrolled(window.scrollY > 20); };
@@ -40,6 +48,30 @@ export function Navbar(): React.JSX.Element {
               {LINKS.map((l) => (
                 <a key={l.href} href={l.href} className="px-4 py-1.5 text-sm text-white/60 transition-all hover:text-white hover:bg-white/10 rounded-full">{l.label}</a>
               ))}
+              <div className="relative">
+                <button 
+                  onMouseEnter={() => setMoreOpen(true)}
+                  className="px-4 py-1.5 text-sm text-white/60 transition-all hover:text-white hover:bg-white/10 rounded-full flex items-center gap-1">
+                  More <ChevronDown size={14} className={cn("transition-transform", moreOpen && "rotate-180")} />
+                </button>
+                <AnimatePresence>
+                  {moreOpen && (
+                    <motion.div 
+                      onMouseLeave={() => setMoreOpen(false)}
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      className="absolute top-full left-0 mt-2 w-64 p-2 rounded-2xl bg-black/90 backdrop-blur-xl border border-white/10 shadow-2xl">
+                      {MORE_LINKS.map((l) => (
+                        <a key={l.href} href={l.href} className="flex flex-col gap-0.5 p-3 rounded-xl hover:bg-white/5 transition-colors">
+                          <span className="text-sm font-bold text-white">{l.label}</span>
+                          <span className="text-[10px] text-white/40">{l.desc}</span>
+                        </a>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
           </div>
           
@@ -60,14 +92,23 @@ export function Navbar(): React.JSX.Element {
 
       <AnimatePresence>
         {open && (
-          <motion.div className="fixed inset-0 z-40 flex flex-col items-center justify-center bg-black/95 backdrop-blur-xl md:hidden"
+          <motion.div className="fixed inset-0 z-40 flex flex-col items-center justify-center bg-black/95 backdrop-blur-xl md:hidden overflow-y-auto pt-20"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
-            {LINKS.map((l, i) => (
-              <motion.a key={l.href} href={l.href} className="py-4 text-3xl font-bold text-white"
-                initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
-                transition={{ delay: i * 0.08, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                onClick={() => setOpen(false)}>{l.label}</motion.a>
-            ))}
+            <div className="flex flex-col items-center gap-2">
+              {LINKS.map((l, i) => (
+                <motion.a key={l.href} href={l.href} className="py-2 text-3xl font-bold text-white"
+                  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
+                  transition={{ delay: i * 0.05, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  onClick={() => setOpen(false)}>{l.label}</motion.a>
+              ))}
+              <div className="h-px w-12 bg-white/10 my-4" />
+              {MORE_LINKS.map((l, i) => (
+                <motion.a key={l.href} href={l.href} className="py-2 text-xl font-medium text-white/60"
+                  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
+                  transition={{ delay: (LINKS.length + i) * 0.05, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  onClick={() => setOpen(false)}>{l.label}</motion.a>
+              ))}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
