@@ -1,10 +1,10 @@
-import { Navbar } from "@/components/sections/navbar";
+import { UltraNav } from "@/components/sections/ultra-nav";
 import { Footer } from "@/components/sections/footer";
 
 export default function PrivacyPage(): React.JSX.Element {
   return (
     <main className="min-h-screen bg-black">
-      <Navbar />
+      <UltraNav />
       <section className="pt-32 pb-24 px-6">
         <div className="mx-auto max-w-3xl">
           <h1 className="text-4xl font-black text-white mb-8">Privacy Policy</h1>

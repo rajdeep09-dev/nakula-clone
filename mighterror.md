@@ -61,7 +61,18 @@ This document tracks all critical errors, build failures, and deployment hurdles
 
 ---
 
+## 6. Import & Refactoring Errors
+
+### Module Not Found after Renaming
+- **Error**: `Module not found: Can't resolve '@/components/sections/navbar'`
+- **Context**: Occurred after the Ultra-Premium upgrade where `navbar.tsx` was replaced by `ultra-nav.tsx`.
+- **Root Cause**: Placeholder pages (`blogs`, `labs`, etc.) were still importing the old `Navbar` component which no longer existed in the file system.
+- **Resolution**: Updated all placeholder page imports to use `UltraNav` instead of `Navbar`.
+
+---
+
 ## Summary of Resolution Strategy
 1. **Linting**: Always run `npm run lint` locally before pushing to Vercel.
 2. **Assets**: Prefer `curl` for direct asset mirroring.
 3. **Config**: Use explicit `vercel.json` configurations to avoid detection ambiguity.
+4. **Refactoring**: After renaming core components, perform a global search (`grep`) to update all import references.
