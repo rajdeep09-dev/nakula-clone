@@ -142,6 +142,13 @@ export const UltraButton = forwardRef<HTMLButtonElement, UltraButtonProps>(
       xl: "h-15 px-10 text-lg"
     };
 
+    // Filter out standard button props that conflict with motion props
+    const { 
+      onDrag, onDragStart, onDragEnd, onDragOver,
+      onAnimationStart: _onAnimationStart, 
+      ...safeProps 
+    } = props;
+
     return (
       <motion.button
         ref={ref}
@@ -155,7 +162,7 @@ export const UltraButton = forwardRef<HTMLButtonElement, UltraButtonProps>(
           sizeClasses[size],
           className
         )}
-        {...props}
+        {...safeProps}
       >
         {/* Loading State Overlay */}
         <AnimatePresence>
@@ -299,6 +306,12 @@ export function AdvancedSpotlightCard({
     spotlightY.set(-1000);
   }, [x, y, spotlightX, spotlightY]);
 
+  const { 
+    onDrag, onDragStart, onDragEnd, onDragOver,
+    onAnimationStart: _onAnimationStart, 
+    ...safeProps 
+  } = props;
+
   return (
     <motion.div
       ref={cardRef}
@@ -314,7 +327,7 @@ export function AdvancedSpotlightCard({
         "group relative rounded-3xl border border-white/5 bg-white/[0.02] transition-colors duration-500 hover:border-white/10 hover:bg-white/[0.04]",
         className
       )}
-      {...props}
+      {...safeProps}
     >
       {/* Dynamic Spotlight Layer */}
       <motion.div

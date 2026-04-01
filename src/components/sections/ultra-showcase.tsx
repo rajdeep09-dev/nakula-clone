@@ -246,7 +246,6 @@ export function UltraShowcase(): React.JSX.Element {
             key={project.id} 
             project={project} 
             index={i} 
-            total={PROJECTS.length}
           />
         ))}
       </div>

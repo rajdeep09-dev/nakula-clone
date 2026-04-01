@@ -71,8 +71,19 @@ This document tracks all critical errors, build failures, and deployment hurdles
 
 ---
 
+## 7. TypeScript Type Errors
+
+### Invalid Component Prop Variant
+- **Error**: `Type '"primary"' is not assignable to type '"default" | "secondary" | "outline" | "ghost" | "glass" | "neon" | undefined'`
+- **Context**: Occurred in `src/components/sections/ultra-nav.tsx` when calling the `UltraButton` component.
+- **Root Cause**: The `UltraButton` interface defines specific string literals for the `variant` prop (e.g., `"default"`, `"neon"`), but a non-existent `"primary"` variant was passed instead.
+- **Resolution**: Changed the `variant` prop value from `"primary"` to `"default"` to align with the component's type definition.
+
+---
+
 ## Summary of Resolution Strategy
 1. **Linting**: Always run `npm run lint` locally before pushing to Vercel.
 2. **Assets**: Prefer `curl` for direct asset mirroring.
 3. **Config**: Use explicit `vercel.json` configurations to avoid detection ambiguity.
 4. **Refactoring**: After renaming core components, perform a global search (`grep`) to update all import references.
+5. **Type Safety**: Strictly adhere to component prop definitions; avoid using "common" variant names (like 'primary') if they aren't explicitly defined in the UI primitive.

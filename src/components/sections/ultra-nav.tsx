@@ -340,7 +340,7 @@ export function UltraNav(): React.JSX.Element {
 
             <Magnetic strength={0.15}>
               <UltraButton 
-                variant="primary" 
+                variant="default" 
                 size="md" 
                 className="hidden md:flex shadow-2xl"
                 onClick={() => window.location.href = "/book-call"}
